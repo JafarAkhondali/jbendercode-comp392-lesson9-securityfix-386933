@@ -266,44 +266,49 @@ var game = (() => {
     // Setup main game loop
     function gameLoop(): void {
         stats.update();
+        
+        velocity = new Vector3();
+        
         if (keyboardControls.enabled) {
-            velocity = new Vector3();
+            
             
             var time: number = performance.now();
             var delta: number = (time - prevTime) / 1000;
+            
+            var direction = new Vector3(0, 0, 0);
 
             if (isGrounded) {
-
                 if (keyboardControls.moveForward) {
                     console.log("Moving Forward");
-                    velocity.z -= 24.0 * delta;
+                    velocity.z -= 800.0 * delta;
                 }
                 if (keyboardControls.moveLeft) {
                     console.log("Moving left");
-                    velocity.x -= 24.0 * delta;
+                    velocity.x -= 800.0 * delta;
                 }
                 if (keyboardControls.moveBackward) {
                     console.log("Moving Backward");
-                    velocity.z += 24.0 * delta;
+                    velocity.z += 800.0 * delta;
                 }
                 if (keyboardControls.moveRight) {
                     console.log("Moving Right");
-                    velocity.x += 24.0 * delta;
+                    velocity.x += 800.0 * delta;
                 }
                 if (keyboardControls.jump) {
                     console.log("Jumping");
-                    velocity.y += 30.0 * delta;
+                    velocity.y += 4000.0 * delta;
                     if(player.position.y > 4) {
                         isGrounded = false;
                     }
                 }
+                player.setDamping(0.7, 0.1);
                 // Chaning player rotation
-                player.setAngularVelocity(new Vector3(-mouseControls.pitch, -mouseControls.yaw, 0));
+                player.setAngularVelocity(new Vector3(0, -mouseControls.yaw, 0));
                 direction.addVectors(direction, velocity);      // Add velocity to player Vector
                 direction.applyQuaternion(player.quaternion);   // Apply player angle
             } // (isGrounded)
             
-            if (Math.abs(player.getLinearVelocity().x) < 20 && Math.abs(player.getLinearVelocity().z) < 20) {
+            if (Math.abs(player.getLinearVelocity().x) < 20 && Math.abs(player.getLinearVelocity().y) < 10) {
                 player.applyCentralForce(direction);
             }
 
